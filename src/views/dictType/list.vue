@@ -51,7 +51,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="200" align="center">
+      <el-table-column label="操作" width="500" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini"  icon="el-icon-edit"  @click="updateShow(scope.row)">
             修改
@@ -61,6 +61,10 @@
             删除
           </el-button>
 
+		  <el-button type="primary" size="mini" icon="el-icon-delete" @click="viewDictValue(scope.row.typeCode)">
+		    查看字典值
+		  </el-button>
+
         </template>
 
 
@@ -69,36 +73,76 @@
     </el-table>
 
     <el-pagination
-              class="pagination"
-              layout="prev, pager, next"
-              :current-page="page"
-              :total="total"
-              :page-size="limit"
-              @current-change="fetchData">
-            </el-pagination>
+      class="pagination"
+      layout="prev, pager, next"
+      :current-page="page"
+      :total="total"
+      :page-size="limit"
+      @current-change="fetchData">
+    </el-pagination>
 
 
-            <el-dialog title="更新字典类型" :visible.sync="dialogVisible" width="490px">
-                  <el-form label-position="right" label-width="100px">
+    <el-dialog title="字典值管理" :visible.sync="dicvValueDialog" width="600px">
+        <el-table :data="dictValuelist" class="tb-edit" style="width: 100%" highlight-current-row @row-click="handleCurrentChange">
+          <el-table-column label="字典值名称" width="200">
+              <template scope="scope">
+                  <el-input size="small" v-model="scope.row.valueCode" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
+                  <!-- <span>{{scope.row.valueCode}}</span> -->
+              </template>
+          </el-table-column>
+          <el-table-column label="字典值编号" width="200">
+              <template scope="scope">
+                  <el-input size="small" v-model="scope.row.valueName" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
+                  <!-- <span>{{scope.row.valueName}}</span> -->
+              </template>
+          </el-table-column>
 
-                    <el-form-item  label="字典类型编号">
-                      <el-input v-model="dictType.typeCode" />
-                    </el-form-item>
+          <el-table-column label="操作">
+              <template scope="scope">
+                  <!--<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
+                  <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              </template>
+          </el-table-column>
 
-                    <el-form-item  label="字典类型名称">
-                      <el-input v-model="dictType.typeName" />
-                    </el-form-item>
 
-                  </el-form>
-                  <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">
-                      取消
-                    </el-button>
-                    <el-button type="primary" @click="action">
-                      确定
-                    </el-button>
-                  </div>
-                </el-dialog>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="addLine">
+            新增字典值
+          </el-button>
+          <el-button @click="dicvValueDialog = false">
+            取消
+          </el-button>
+          <el-button type="primary" @click="saveDictValueList">
+            确定
+          </el-button>
+        </div>
+
+
+    </el-dialog>
+
+
+    <el-dialog title="更新字典类型" :visible.sync="dialogVisible" width="490px">
+          <el-form label-position="right" label-width="100px">
+
+            <el-form-item  label="字典类型编号">
+              <el-input v-model="dictType.typeCode" />
+            </el-form-item>
+
+            <el-form-item  label="字典类型名称">
+              <el-input v-model="dictType.typeName" />
+            </el-form-item>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dicvValueDialog = false">
+              取消
+            </el-button>
+            <el-button type="primary" @click="action">
+              确定
+            </el-button>
+          </div>
+        </el-dialog>
   </div>
 
 
@@ -107,7 +151,7 @@
 </template>
 
 <script>
-import { getPageList,updateDictType,saveDictType,deleteById } from '@/api/dictType'
+import { getPageList,updateDictType,saveDictType,deleteById ,listByParentId,saveList} from '@/api/dictType'
 
 export default {
   data() {
@@ -120,7 +164,11 @@ export default {
 
       insert:true,
       dialogVisible: false,
-      dictType:{}
+      dictType:{},
+
+      dicvValueDialog:false,
+      dictValuelist:[],
+      typeCode:''
     }
   },
   created() {
@@ -209,6 +257,55 @@ export default {
             })
           }
         })
+    },
+
+    viewDictValue(typeCode){
+      this.dicvValueDialog = true
+      this.typeCode = typeCode
+      listByParentId(typeCode).then(response => {
+        this.dictValuelist = response.data.pageModel.records
+        // console.log(JSON.stringify(this.dictValuelist))
+      })
+    },
+
+    handleCurrentChange(row, event, column) {
+        console.log(row, event, column, event.currentTarget)
+    },
+    handleEdit(index, row) {
+        console.log(index, row);
+    },
+    handleDelete(index, row) {
+        console.log(index, row);
+        this.dictValuelist.splice(index,1)
+    },
+
+    addLine(){
+      this.dictValuelist.push({
+        "valueCode":'',
+        "valueName":''
+      });
+    },
+
+    saveDictValueList(){
+
+      let list = this.dictValuelist.map(item => {
+          return {
+              typeCode:this.typeCode,
+              valueCode: item.valueCode,
+              valueName: item.valueName
+          }
+      })
+
+      saveList(list).then(response =>{
+        this.$message({
+                    message: "保存成功",
+                    type: 'success'
+                  })
+      });
+
+      // console.log(JSON.stringify(this.dictValuelist));
+      // console.log("+++++++");
+      console.log(JSON.stringify(list));
     },
 
     resetData() {

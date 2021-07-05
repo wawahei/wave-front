@@ -31,3 +31,18 @@ export function deleteById(typeId){
     method: 'delete'
   })
 }
+
+export function listByParentId(typeCode){
+  return request({
+    url: `${api_name}/api/dictValue/list/1/100?typeCode=${typeCode}`,
+    method: 'get'
+  })
+}
+
+export function saveList(list){
+  return request({
+    url: `${api_name}/api/dictValue/saveList`,
+    method: 'post',
+    data: list
+  })
+}
