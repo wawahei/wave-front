@@ -159,6 +159,27 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/dictType',
+    component: Layout,
+    redirect: '/dictType/list',
+    name: 'Example',
+    meta: { title: '系统管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'list',
+        name: 'Table',
+        component: () => import('@/views/dictType/list'),
+        meta: { title: '字典管理', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Tree', icon: 'tree' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
