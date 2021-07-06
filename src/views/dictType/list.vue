@@ -264,7 +264,6 @@ export default {
       this.typeCode = typeCode
       listByParentId(typeCode).then(response => {
         this.dictValuelist = response.data.pageModel.records
-        // console.log(JSON.stringify(this.dictValuelist))
       })
     },
 
@@ -301,11 +300,10 @@ export default {
                     message: "保存成功",
                     type: 'success'
                   })
+        this.dicvValueDialog = false;
       });
 
-      // console.log(JSON.stringify(this.dictValuelist));
-      // console.log("+++++++");
-      console.log(JSON.stringify(list));
+
     },
 
     resetData() {
