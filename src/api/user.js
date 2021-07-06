@@ -12,7 +12,7 @@ export default{
 
     save(user){
       return request({
-        url: `${api_name}/api/dictType/save`,
+        url: `${api_name}/api/user/save`,
         method: 'post',
         data: user
       })

@@ -12,7 +12,7 @@
       </el-button>
       <el-button type="default" @click="resetData()">清空</el-button>
 
-      <el-button type="text" class="search-button v-link highlight clickable selected" @click="saveShow()">
+      <el-button type="text" class="search-button v-link highlight clickable selected" @click="saveUser()">
         新增
       </el-button>
     </el-form>
@@ -80,6 +80,10 @@
 
       removeById(userId){
         console.log(userId);
+      },
+
+      saveUser(){
+        this.$router.push('/system/user/save/0')
       }
     }
 
