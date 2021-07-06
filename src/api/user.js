@@ -1,24 +1,36 @@
 import request from '@/utils/request'
 
-export function login(data) {
-  return request({
-    url: '/vue-admin-template/user/login',
-    method: 'post',
-    data
-  })
-}
+const api_name = ``
+export default{
 
-export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
+    list(page,limit,keyword){
+      return request({
+        url: `${api_name}/api/user/list/${page}/${limit}?keyword=${keyword}`,
+        method: 'get'
+      })
+    },
 
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
+    save(user){
+      return request({
+        url: `${api_name}/api/dictType/save`,
+        method: 'post',
+        data: user
+      })
+    },
+
+    fetchById(userId){
+      return request({
+        url: `${api_name}/api/user/fetchById/${userId}`,
+        method: 'get'
+      })
+    },
+
+    updateById(user){
+      return request({
+        url: `${api_name}/api/user/update`,
+        method: 'put',
+        data: user
+      })
+    }
+
 }

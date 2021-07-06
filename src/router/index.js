@@ -160,23 +160,34 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/dictType',
+    path: '/system',
     component: Layout,
     redirect: '/dictType/list',
     name: 'Example',
     meta: { title: '系统管理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'list',
-        name: 'Table',
+        path: 'dictType/list',
+        name: '字典管理',
         component: () => import('@/views/dictType/list'),
         meta: { title: '字典管理', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'role/list',
+        name: '角色管理',
+        component: () => import('@/views/role/list'),
+        meta: { title: '角色管理', icon: 'table' }
+      },
+      {
+        path: 'user/list',
+        name: '用户管理',
+        meta: { title: '用户管理', icon: 'tree' },
+        component: () => import('@/views/user/list'),
+      },
+      {
+        path: 'user/save/:userId',
+        component: () => import('@/views/user/save'),
+        hidden:true
       }
     ]
   },
